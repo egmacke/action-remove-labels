@@ -20,6 +20,10 @@ inputs:
     description: Whether the action fails or not when getting errors. [true,false]
     default: 'false'
     required: false
+  allow_missing:
+    description: Whether to ignore missing labels. [true,false]
+    default: 'false'
+    required: false
 runs:
   using: node12
   main: dist/index.js

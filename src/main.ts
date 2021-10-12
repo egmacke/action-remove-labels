@@ -20,6 +20,7 @@ async function run(): Promise<void> {
     }
 
     const client = github.getOctokit(githubToken);
+    const allowMissingLabels = core.getInput('allow_missing');
 
     const remaining = [];
     for (const label of labels) {
@@ -31,8 +32,10 @@ async function run(): Promise<void> {
           issue_number: number
         });
       } catch (e) {
-        core.warning(`failed to remove label: ${label}: ${e}`);
-        remaining.push(label);
+        if (allowMissingLabels === 'false') {
+          core.warning(`failed to remove label: ${label}: ${e}`);
+          remaining.push(label);
+        }
       }
     }
 
@@ -40,8 +43,8 @@ async function run(): Promise<void> {
       throw new Error(`failed to remove labels: ${remaining}`);
     }
   } catch (e) {
+    core.error(e);
     if (core.getInput('fail_on_error') === 'true') {
-      core.error(e);
       core.setFailed(e.message);
     }
   }
