@@ -25,7 +25,7 @@ async function run(): Promise<void> {
     const remaining = [];
     for (const label of labels) {
       try {
-        await client.issues.removeLabel({
+        await client.rest.issues.removeLabel({
           name: label,
           owner,
           repo,
@@ -43,9 +43,9 @@ async function run(): Promise<void> {
       throw new Error(`failed to remove labels: ${remaining}`);
     }
   } catch (e) {
-    core.error(e);
+    core.error(e as Error);
     if (core.getInput('fail_on_error') === 'true') {
-      core.setFailed(e.message);
+      core.setFailed((e as Error).message);
     }
   }
 }
